@@ -1,0 +1,10 @@
+To use gdb:
+	1. Compile the program
+	2. gdb ./<program.out>
+	3. To set a break point: br <label>
+	4. To start: run
+	5. To continue: step
+	6. To see register values: info registers <register> <register> ...
+	note:
+		The instruction gdb shows hasn't executed, its the NEXT instruction
+

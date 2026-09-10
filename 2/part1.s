@@ -7,6 +7,6 @@ main:
 	mov x4, #2
 a1:
 	mul x5, x3, x1
-	div x6, x5, x4
+	udiv x6, x5, x4
 	add x2, x5, x0
 

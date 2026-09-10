@@ -8,11 +8,8 @@ coyote:
     .word   8
     .word   10
 
-/*
-	x9 = pointer to dynamic array
-	x0 = pointer to coyote
-	
-*/
+// x9 = pointer to dynamic array
+// x0 = pointer to coyote
 .text				// instruction segment
 .global main
 main:

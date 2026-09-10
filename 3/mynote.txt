@@ -8,3 +8,10 @@ To use gdb:
 	note:
 		The instruction gdb shows hasn't executed, its the NEXT instruction
 
+To see the value of a .global coyote = int cayote[] = { 0, 2, 4, 6, 8, 10 };
+	1. gdb ./program name
+	2. br wherever
+	3. x/6d &coyote means display 6, decimal, 1-byte chunks ath identifier coyote
+	4. if you have a pointer stored get its info with info registers x9
+	5. x/6d 0xfffff7ff9000 to see array at the pointer in step 4
+

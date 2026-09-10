@@ -8,6 +8,11 @@ coyote:
     .word   8
     .word   10
 
+/*
+	x9 = pointer to dynamic array
+	x0 = pointer to coyote
+	
+*/
 .text				// instruction segment
 .global main
 main:
@@ -20,19 +25,40 @@ main:
 	mov x4, 0              	// File descriptor (irrelevant for MAP_ANONYMOUS)
 	mov x5, 0              	// Offset (irrelevant)
 	svc 0                  	// Make the syscall
-	
+// x1 and w1 ARE THE SAME REGISTER
+// +-----------------------------+
+// |     x1       |      w1      |
+// +-----------------------------+
+
+copying:
 	mov x9, x0		// save pointer in x9 = dynamic array pointer
 
 	// i need to put x9[0] = x0[0]
 	ldr x0, =coyote		// x0 = pointer to coyote
-	ldr w0, [x0]		// x0 is an address set above
-				// go to the address stored in x0, get the valuethere
 				// put the value into w0
-	str w0, [x9]		// put the value of w0 (coyote[0]) into the address
+	// DONT USE w0 here, it will override x0
+	ldr w1, [x0]		// x0 is an address set above
+				// go to the address stored in x0, get the valuethere
+	str w1, [x9]		// put the value of w0 (coyote[0]) into the address
 				// stored in x9 (dynamic array at index 0)
 				// this GOES to the actual address stored in x9
 
+	ldr w1, [x0, #4]	// coyote[1] = 2
+	str w1, [x9, #4]
 
+	ldr w1, [x0, #8]	// coyote[2] = 4
+	str w1, [x9, #8]
+
+	ldr w1, [x0, #12]	// coyote[3] = 6
+	str w1, [x9, #12]
+
+	ldr w1, [x0, #16]	// coyote[4] = 8
+	str w1, [x9, #16]
+
+	ldr w1, [x0, #20]	// coyote[5] = 10
+	str w1, [x9, #20]
+	
+done:
 	// DEALLOCATE THE ARRAY
     	mov x8, 215             // Syscall number for munmap
     	mov x0, x9             	// Address of the memory region to deallocate

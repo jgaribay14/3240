@@ -1,4 +1,5 @@
 *.o
 *out
 mynote.txt
+.DS_STORE
 

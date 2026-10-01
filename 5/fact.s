@@ -1,72 +1,73 @@
+// static memory segment
 .data
 .global string1
 string1:
-	.ascii	"The factorial of %d is %d!\n\0"
+	.ascii "The factorial of %d is %d!\n\0"
 string2:
-	.ascii	"Entering fact() with n=%d\n\0"
+	.ascii "Entering fact() with n=%d\n\0"
 
 .text
 .extern printf
 .global main
 main:
-### SET UP FRAME RECORD ###
-# Save FP and LR with pre-indexing, allocated another 16 bytes for temp.
-stp	x29, x30, [sp, -16]!
-# Set FP
-add	x29, sp, 0
+	stp 	x29, x30, [sp, -16]! 	// save frame pointer and link
+									// register, add 16 bytes for the
+									// temp
+									// this does:
+									// sub 		sp, sp, 16
+									// sw 		x29, [sp]
+									// sw 		x30, [sp, 8]
+	add 	x29, sp, 0 				// set frame pointer
 
-### MAIN() LOGIC ###
-# Call fact(6)
-mov	x0, 8
-bl	fact
-# Respond with prompt
-add	x2, x0, 0
-mov	x1, 6
-ldr	x0, =string1
-bl	printf
+	// MAIN()
+	// leaf functions: functions that don't call other functions
+	mov 	x0, 8 					// Call fact(8), put in x0 for argument
+	bl 		fact
+
+	add 	x2, x0, 0 			// Respond with prompt
+	mov 	x1, 8
+	ldr 	x0, =string1 		// load the address of string1 string
+	bl 		printf
 
 ### TAKE DOWN FRAME RECORD ###
-ldp	x29, x30, [sp], 16
-mov	w0, 0
-ret
+	ldp 	x29, x30, [sp], 16
+	mov 	w0, 0
+	ret
 
+// int fact(long int n) {
+// 	printf(...)
+// 	if (n <= 1)
+// 		return 1;
+// 	else
+// 		return fact(n-1) * n;
 .global fact
 fact:
-### SET UP FRAME RECORD ###
-# Save FP and LR with pre-indexing, allocated another 16 bytes for temp.
-stp	x29, x30, [sp, -32]!
-# Set FP
-add	x29, sp, 0
-# Shadow input argument
-str	x0, [sp, 16]
+	stp 	x29, x30, [sp, -32]! 	// Save FP and LR
+	add 	x29, sp, 0 				// set frame pointer
 
-### SOME PROMPTS ###
-ldr	x0, =string2
-ldr	x1, [sp, 16]
-bl printf
+	str 	x0, [sp, 16] 			// shadow input argument
 
-### LOGIC FOR FACT() ###
-ldr	x0, [sp, 16]
-cmp	x0, 1
-# If n <= 1, return 1 ... jump to block that returns 1
-ble 	return1
-# Logic for calc. n * fact(n-1) here. At this instruction the value for x0 
-# should still hold arg1 for this call. Calculate n-1, note it's set up in x0 
-# which is the argument register
-sub	x0, x0, 1
-# This is the call to fact(n-1)
-bl	fact
-# At this point x0 contains the return value for fact(n-1). Refresh value for
-# arg1.
-ldr	x1, [sp, 16]
-# Now do the multiplication op, set it up to place result in return register.
-mul	x0, x0, x1
-b 	return
+	ldr 	x0, =string2 			// prompt
+	ldr 	x1, [sp, 16]
+	bl 		printf
+
+	ldr 	x0, [sp, 16] 			// logic for fact()
+	cmp 	x0, 1
+	ble 	return1 				// if n <= 1, jump to return1
+
+	sub 	x0, x0, 1 				// do n-1 for next line
+	bl 		fact 					// call fact(n-1)
+
+	ldr 	x1, [sp, 16] 			// refresh the value of n
+
+	mul 	x0, x0, x1 				// do mult, result goes in x0
+	b 	return 						// prevent it from falling into return1
 
 return1:
-mov	x0, 1
-# return1 block falls through to the return code
+	mov 	x0, 1 					// return1 falls through to return code
 
+// this is the epilogue
 return:
-ldp	x29, x30, [sp], 32
-ret
+	ldp 	x29, x30, [sp], 32
+	ret
+

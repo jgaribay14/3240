@@ -1,0 +1,22 @@
+all: main1.out main2.out #arraymult.s
+
+main1.out: main.o arraymult.o
+	gcc -Wall -O0 -g -o main1.out main.o arraymult.o
+main2.out: main.o arraymult.o
+	gcc -Wall -funroll-all-loops -g -o main2.out main.o arraymult.o
+
+main.o: main.c
+	gcc -Wall -c -O0 -g -omain.o main.c
+arraymult.o: arraymult.c
+	gcc -Wall -c -O0 -g -oarraymult.o arraymult.c
+
+# arraymult.s: arraymult.c
+# 	gcc -Wall -g -S -o arraymult.s arraymult.c
+# 
+# arraymult.o: arraymult.s
+# 	gcc -Wall -O0 -g -o arraymult.o arraymult.s
+
+clean:
+	rm -f *.out *.o
+
+

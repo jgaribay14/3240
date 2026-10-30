@@ -1,0 +1,16 @@
+at minimum 3 figures: 1 bit level, 32 bit, some sort of table explainign a listof instructiotns and the control values
+
+the compiler is resposible for carefully arranging al the instructions into packets and not have dependenceis within th epackets
+
+intel itanium tried to use the concept of having the insrtuctions sorted into packets (static multi issue)
+
+AMD owns 64 bit x86 because they expanded it when intel tried to move to itanium
+Intel owns 32 bit x86
+
+
+
+---------------------------------------------------------
+for tomorrow (friday 10/29 lecture)
+concepts we'll cover today
+1. What is "packed"?
+2. Hazard
